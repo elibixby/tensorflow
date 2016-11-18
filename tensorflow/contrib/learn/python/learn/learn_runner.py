@@ -25,6 +25,7 @@ from tensorflow.python.platform import tf_logging as logging
 
 def run(experiment_fn,
         output_dir,
+        config=None,
         schedule=None,
         *experiment_fn_args,
         **experiment_fn_kwargs):
@@ -77,20 +78,12 @@ def run(experiment_fn,
       default, or `schedule` doesn't reference a member of `Experiment`.
     TypeError: `schedule` references non-callable member.
   """
-  if not output_dir:
-    raise ValueError('Must specify an output directory')
-  if not callable(experiment_fn):
-    raise TypeError('Experiment builder "%s" is not callable.' %
-                    experiment_fn)
 
   # Call the builder
   experiment = experiment_fn(output_dir=output_dir, *experiment_fn_args, **experiment_fn_kwargs)
-  if not isinstance(experiment, Experiment):
-    raise TypeError('Experiment builder did not return an Experiment '
-                    'instance, got %s instead.' % type(experiment))
 
   # Get the schedule
-  config = experiment.estimator.config
+  config = config or _get_default_config()
   schedule = schedule or _get_default_schedule(config)
 
   # Execute the schedule
@@ -113,6 +106,11 @@ def run(experiment_fn,
 
   return task()
 
+
+def train_and_evaluate()
+
+def _get_default_config():
+  pass
 
 def _is_distributed(config):
   """Returns true if this is a distributed job."""
