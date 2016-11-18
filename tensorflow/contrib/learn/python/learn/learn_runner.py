@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Runs an Experiment."""
+"""Provides a wrapper which runs Estimator"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -23,12 +23,23 @@ from tensorflow.contrib.learn.python.learn.experiment import Experiment
 from tensorflow.python.platform import tf_logging as logging
 
 
-def run(experiment_fn,
-        output_dir,
-        config=None,
+def run(estimator,
+        train_input_fn,
+        eval_input_fn,
         schedule=None,
-        *experiment_fn_args,
-        **experiment_fn_kwargs):
+        train_input_args=None,
+        train_input_kwargs=None,
+        eval_input_args=None,
+        eval_input_kwargs=None,
+        eval_metrics=None,
+        train_steps=None,
+        eval_steps=100,
+        train_monitors=None,
+        local_eval_frequency=None,
+        eval_delay_secs=120,
+        continuous_eval_throttle_secs=60,
+        min_eval_frequency=1,
+        delay_workers_by_global_step=False):
   """Make and run an experiment.
 
   It creates an Experiment by calling `experiment_fn`. Then it calls the
